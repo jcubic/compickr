@@ -7,10 +7,16 @@ if (isset($_GET['username'])) {
 
     require('vendor/phpflickr/phpFlickr.php');
 
+    header('Content-Type: application/json');
+
     $config = json_decode(file_get_contents('../config.json'));
     $flickr = new phpFlickr($config->flickr->key, $config->flickr->secret, true);
 
     $person = $flickr->people_findByUsername($_GET['username']);
+
+    if (!$person) {
+        die(json_encode(array('error' => $flickr->getErrorMsg())));
+    }
     $base = $flickr->urls_getUserPhotos($person['id']);
 
     $count = isset($_GET['count']) ? intval($_GET['count']) : 10;
@@ -24,7 +30,7 @@ if (isset($_GET['username'])) {
             'big' => $flickr->buildPhotoURL($photo)
         );
     }, (array)$photos['photos']['photo']);
-    header('Content-Type: application/json');
+
     echo json_encode($response);
 }
 

@@ -36,12 +36,17 @@ class FlickrPhotos {
     onUpdate(fn) {
         this.events.on('username', fn);
     }
+    onError(fn) {
+        this.events.on('error', fn);
+    }
     setUser(username) {
         fetch(config.api + '?username=' + username).then((response) => {
             return response.json();
         }).then((photos) => {
             this.photos = photos;
             this.events.trigger('username', photos);
+        }).catch((ex) => {
+            this.events.trigger('error', ex);
         });
     }
 }
@@ -100,8 +105,5 @@ class Compickr extends preact.Component {
         )
     }
 }
-try {
-    preact.render(<Compickr/>, document.getElementById('main'));
-} catch(e) {
-    throw e;
-}
+preact.render(<Compickr/>, document.getElementById('main'));
+

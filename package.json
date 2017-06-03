@@ -1,0 +1,38 @@
+{
+  "name": "compickr",
+  "version": "0.1.0",
+  "description": "Show Composition on flickr images",
+  "main": "index.js",
+  "scripts": {
+    "webpack": "NODE_ENV=production webpack",
+    "serve": "NODE_ENV=development webpack-dev-server --hot --progress --colors --port 8080"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jcubic/compickr.git"
+  },
+  "keywords": [
+    "flickr",
+    "photo",
+    "photography",
+    "picture",
+    "composition"
+  ],
+  "author": "Jakub Jankiewicz <jcubic@onet.pl> (http://jcubic.pl/me)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jcubic/compickr/issues"
+  },
+  "homepage": "https://github.com/jcubic/compickr#readme",
+  "devDependencies": {
+    "babel-core": "^6.24.1",
+    "babel-loader": "^7.0.0",
+    "babel-preset-react": "^6.24.1",
+    "copy-webpack-plugin": "^4.0.1",
+    "jsx-loader": "^0.13.2",
+    "preact": "^8.1.0",
+    "preact-dom": "^1.0.1",
+    "webpack": "^2.6.1",
+    "webpack-dev-server": "^2.4.5"
+  }
+}

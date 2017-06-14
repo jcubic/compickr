@@ -21,11 +21,13 @@ module.exports = {
             minChunks: isNodeModule
         }),
         new webpack.DefinePlugin({
-            PRODUCTION: ENV == 'production'
+            PRODUCTION: ENV === 'production'
         }),
         new CopyWebpackPlugin([
             {from: 'index.html'},
-            {from: '.htaccess'}
+            {from: '.htaccess'},
+            {from: 'config.json'},
+            {from: 'api', to: 'api'}
         ])
     ]).concat(ENV==='production' ? [
         new webpack.optimize.UglifyJsPlugin({
@@ -59,13 +61,19 @@ module.exports = {
         })
     ] : []),
     module: {
-        loaders: [
+        rules: [
             {
                 test: /\.jsx?$/,
                 exclude: /node_modules/,
-                use: 'babel-loader'
+                loader: 'babel-loader',
+                query: {
+                    presets: ['es2015']
+                }
             }
         ]
+    },
+    resolve: {
+        extensions: ['.jsx', '.js', '.json']
     },
     devServer: {
         historyApiFallback: true,

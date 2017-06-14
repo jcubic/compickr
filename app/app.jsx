@@ -1,57 +1,43 @@
-import preact from 'preact';
 import config from './config';
 import 'whatwg-fetch';
+import 'babel-polyfill';
 
-class PubSub {
-    constructor() {
-        this.callbacks = {};
-    }
-    on(name, fn) {
-        this.callbacks[name] = this.callbacks[name] || [];
-        this.callbacks[name].push(fn);
-    }
-    off(name, fn) {
-        if (this.callbacks[name]) {
-            if (typeof fn == 'undefined') {
-                delete this.callbacks[name];
-            } else {
-                this.callbacks[name] = this.callbacks[name].filter((callback) => {
-                    callback == fn;
+import preact from 'preact';
+import { createStore } from 'redux';
+import { Provider } from 'preact-redux';
+
+var hub = createStore((state = {username: '', photos:[]}, action) => {
+    switch(action.type) {
+        case 'CHANGE_NAME':
+            var username = action.value;
+            fetch(config.api + '?username=' + username).then((response) => {
+                return response.json();
+            }).then((photos) => {
+                hub.dispatch({
+                    type: 'PHOTOS',
+                    value: photos
                 });
-            }
-        }
+            }).catch((ex) => {
+                hub.dispatch({
+                    type: 'ERROR',
+                    value: ex
+                });
+            });
+            return Object.assign({}, state, {
+                fetching: true
+            });
+        case 'PHOTOS':
+            return Object.assign({}, state, {
+                photos: action.value
+            });
+        case 'ERROR':
+            return Object.assign({}, state, {
+                error: action.value
+            });
+        default:
+            return state;
     }
-    trigger(name, ...args) {
-        if (this.callbacks[name]) {
-            this.callbacks[name].forEach((fn) => fn(...args));
-        }
-    }
-}
-
-
-class FlickrPhotos {
-    constructor() {
-        this.events = new PubSub();
-    }
-    onUpdate(fn) {
-        this.events.on('username', fn);
-    }
-    onError(fn) {
-        this.events.on('error', fn);
-    }
-    setUser(username) {
-        fetch(config.api + '?username=' + username).then((response) => {
-            return response.json();
-        }).then((photos) => {
-            this.photos = photos;
-            this.events.trigger('username', photos);
-        }).catch((ex) => {
-            this.events.trigger('error', ex);
-        });
-    }
-}
-
-var photos = new FlickrPhotos();
+});
 
 class Username extends preact.Component {
     constructor() {
@@ -62,7 +48,10 @@ class Username extends preact.Component {
         if (e.which == 13) {
             var username = this.input.value.trim();
             if (username) {
-                photos.setUser(username);
+                hub.dispatch({
+                    type: 'CHANGE_NAME',
+                    value: username
+                });
             }
         }
     }
@@ -84,26 +73,27 @@ class Picture extends preact.Component {
 
 
 class Compickr extends preact.Component {
-    constructor() {
-        super();
-        this.state.data = [];
-    }
-    componentDidMount() {
-        photos.onUpdate((photos) => {
-            this.setState({data: photos});
-        });
-    }
     render(props, state) {
-        var pictures = state.data.map((photo, index) => {
+        var pictures = props.photos.map((photo, index) => {
             return <li><Picture thumb={photo.thumb}/></li>
         });
         return (
             <div>
-                <Username/>
-                <ul>{pictures}</ul>
+            <Username/>
+            <ul>{pictures}</ul>
             </div>
         )
     }
 }
-preact.render(<Compickr/>, document.getElementById('main'));
+var main = document.getElementById('main');
+function render() {
+    preact.render(
+        <Compickr photos={hub.getState().photos}/>,
+        main,
+        main.lastChild
+    );
+}
+
+render();
+hub.subscribe(render);
 

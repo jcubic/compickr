@@ -35,6 +35,7 @@
     "extract-text-webpack-plugin": "^2.1.2",
     "preact": "^8.1.0",
     "preact-redux": "^2.0.1",
+    "preact-router": "^2.5.2",
     "promise-polyfill": "^6.0.2",
     "redux": "^3.6.0",
     "style-loader": "^0.18.2",

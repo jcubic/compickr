@@ -1,11 +1,15 @@
-#main > div {
+#main .grid {
     display: grid;
     grid-template-columns: calc(3 * 90px) 510px;
     grid-template-rows: 20px calc(6 * 90px);
+
 }
-#main > div > input {
+#main .grid > input {
     grid-column-start: 1;
     grid-column-end: 3;
+}
+.list {
+    position: relative;
 }
 .thumbs {
     list-style: none;
@@ -33,30 +37,9 @@
     margin-top: 15px;
 }
 /* pagination from https://github.com/brajeshwar/paginate */
-.light {
-    background: #f3f3f3;
-    overflow: hidden;
-}
-
-.wrapper {
-    margin: 0;
-    padding: 4em;
-}
-
-.doc {
-    border-bottom: 1px solid #ccc;
-    margin: 1em auto;
-    width: 40%;
-}
-.doc .title {
-    text-align: center; 
-}
-
-/*!
- * The important stuffs. The ones that you should copy-paste and use.
- */
 .paginate {
     text-align: center;
+    margin-top: 10px;
 }
 .paginate ul {
     list-style: none;
@@ -129,4 +112,98 @@
 }
 .paginate a.inactive, .paginate a.active {
     cursor: default;
+}
+/* Loader from http://cssload.net/ */
+
+.cssload-container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+}
+.cssload-container:not(.active) {
+    visibility: hidden;
+}
+
+.cssload-whirlpool,
+.cssload-whirlpool::before,
+.cssload-whirlpool::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border: 1px solid rgb(204,204,204);
+    border-left-color: rgb(0,0,0);
+    -webkit-border-radius: 974px;
+       -moz-border-radius: 974px;
+        -ms-border-radius: 974px;
+         -o-border-radius: 974px;
+            border-radius: 974px;
+}
+
+.cssload-whirlpool {
+    margin: -24px 0 0 -24px;
+    height: 49px;
+    width: 49px;
+    -webkit-animation: cssload-rotate 1150ms linear infinite;
+       -moz-animation: cssload-rotate 1150ms linear infinite;
+        -ms-animation: cssload-rotate 1150ms linear infinite;
+         -o-animation: cssload-rotate 1150ms linear infinite;
+            animation: cssload-rotate 1150ms linear infinite;
+}
+
+.cssload-whirlpool::before {
+    content: "";
+    margin: -22px 0 0 -22px;
+    height: 43px;
+    width: 43px;
+    -webkit-animation: cssload-rotate 1150ms linear infinite;
+       -moz-animation: cssload-rotate 1150ms linear infinite;
+        -ms-animation: cssload-rotate 1150ms linear infinite;
+         -o-animation: cssload-rotate 1150ms linear infinite;
+            animation: cssload-rotate 1150ms linear infinite;
+}
+
+.cssload-whirlpool::after {
+    content: "";
+    margin: -28px 0 0 -28px;
+    height: 55px;
+    width: 55px;
+    -webkit-animation: cssload-rotate 2300ms linear infinite;
+       -moz-animation: cssload-rotate 2300ms linear infinite;
+        -ms-animation: cssload-rotate 2300ms linear infinite;
+         -o-animation: cssload-rotate 2300ms linear infinite;
+            animation: cssload-rotate 2300ms linear infinite;
+}
+
+
+
+@keyframes cssload-rotate {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@-o-keyframes cssload-rotate {
+    100% {
+        -o-transform: rotate(360deg);
+    }
+}
+
+@-ms-keyframes cssload-rotate {
+    100% {
+        -ms-transform: rotate(360deg);
+    }
+}
+
+@-webkit-keyframes cssload-rotate {
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@-moz-keyframes cssload-rotate {
+    100% {
+        -moz-transform: rotate(360deg);
+    }
 }

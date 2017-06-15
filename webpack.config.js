@@ -9,7 +9,7 @@ function isNodeModule(module) {
 
 module.exports = {
     entry:  {
-        app: path.resolve('./app') + '/app.jsx'
+        app: path.resolve('./app') + '/index.jsx'
     },
     output: {
         path: path.resolve('./dist'),

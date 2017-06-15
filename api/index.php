@@ -3,14 +3,14 @@
 error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
 ini_set('display_errors', 'On');
 
+require('vendor/phpflickr/phpFlickr.php');
+
+header('Content-Type: application/json');
+
+$config = json_decode(file_get_contents('../config.json'));
+$flickr = new phpFlickr($config->flickr->key, $config->flickr->secret, true);
+
 if (isset($_GET['username'])) {
-
-    require('vendor/phpflickr/phpFlickr.php');
-
-    header('Content-Type: application/json');
-
-    $config = json_decode(file_get_contents('../config.json'));
-    $flickr = new phpFlickr($config->flickr->key, $config->flickr->secret, true);
 
     if (preg_match("/^[0-9]+@/", $_GET['username'])) {
         $id = $_GET['username'];
@@ -37,11 +37,29 @@ if (isset($_GET['username'])) {
         return array(
             'thumb' => $flickr->buildPhotoURL($photo, "Square"),
             'url' => $base . $photo['id'],
-            'big' => $flickr->buildPhotoURL($photo)
+            'big' => $flickr->buildPhotoURL($photo),
+            'id' => $photo['id']
         );
     }, (array)$photos['photos']['photo']);
 
-    echo json_encode(array('count' => $total_count, 'pictures' => $response));
+    echo json_encode(array(
+        'count' => $total_count,
+        'pictures' => $response,
+        'id' => $id
+    ));
+} else if (isset($_GET['picture'])) {
+    $sizes = $flickr->photos_getSizes($_GET['picture']);
+    foreach ($sizes as $picture) {
+        if ($picture['label'] == 'Square') {
+            $thumb = $picture['source'];
+        } else if ($picture['label'] == 'Medium') {
+            $big = $picture['source'];
+        }
     }
+    echo json_encode(array(
+        'big' => $big,
+        'thumb' => $thumb
+    ));
+}
 
 ?>

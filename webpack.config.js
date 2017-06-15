@@ -69,6 +69,10 @@ module.exports = {
                 query: {
                     presets: ['es2015']
                 }
+            },
+            {
+                test: /\.css$/,
+                loaders: ['style-loader', 'css-loader']
             }
         ]
     },
@@ -76,6 +80,8 @@ module.exports = {
         extensions: ['.jsx', '.js', '.json']
     },
     devServer: {
+        contentBase: path.join(__dirname, "dist"),
+        compress: true,
         historyApiFallback: true,
         open: true
     }

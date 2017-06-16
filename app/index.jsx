@@ -8,12 +8,20 @@ import thunk from 'redux-thunk';
 import Compickr from './Compickr';
 import reducer from './Reducer';
 
+import { grids } from './components/Grid';
+
+var grid = Object.assign({}, grids[0]);
+grid.count = grids.length;
+grid.index = 0;
+
 window.hub = createStore(reducer, {
     username: '',
     pictures: [],
     zoom: null,
     page: 1,
-    pages: null
+    pages: null,
+    grids: grids,
+    grid: grid
 }, applyMiddleware(thunk));
 
 var main = document.getElementById('main');

@@ -6,8 +6,10 @@ import Pagination from './components/Pagination';
 import Loader from './components/Loader';
 import List from './components/List';
 import Username from './components/Username';
+import Grid from './components/Grid';
+import Navigation from './components/Navigation';
 
-export default class Compickr extends preact.Component {
+class Compickr extends preact.Component {
     render(props, state) {
         return (
             <div>
@@ -15,14 +17,18 @@ export default class Compickr extends preact.Component {
                 <Username/>
                 <div class="list">
                   <List />
-                  <Pagination/>
-                  <Loader/>
+                  <Pagination />
+                  <Loader />
                 </div>
-                <Picture/>
+                <div class="picture-wrapper">
+                  <Picture />
+                  <Grid />
+                  <Navigation />
+                </div>
               </div>
             </div>
         );
     }
 }
 
-
+export default Compickr;

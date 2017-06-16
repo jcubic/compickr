@@ -1,5 +1,21 @@
 export default (state, action) => {
+    console.log(action);
+    console.log(state);
     switch(action.type) {
+        case 'CHANGE_GRID':
+            var grid = state.grids[action.index];
+            if (grid) {
+                return Object.assign({}, state, {
+                    grid: Object.assign(
+                        {},
+                        state.grid,
+                        grid,
+                        {index: action.index}
+                    )
+                });
+            } else {
+                return state;
+            }
         case 'FETCH_PICTURES':
             return Object.assign({}, state, {
                 username: action.username,

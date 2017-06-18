@@ -27,7 +27,8 @@ module.exports = {
             {from: 'index.html'},
             {from: '.htaccess'},
             {from: 'config.json'},
-            {from: 'api', to: 'api'}
+            {from: 'api', to: 'api'},
+            {from: 'favicon', to: 'favicon'}
         ])
     ]).concat(ENV==='production' ? [
         new webpack.optimize.UglifyJsPlugin({

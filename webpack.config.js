@@ -1,6 +1,6 @@
 var webpack = require('webpack');
 var path = require('path');
-var CopyWebpackPlugin = require('copy-webpack-plugin');
+var copyWebpackPlugin = require('copy-webpack-plugin');
 const ENV = process.env.NODE_ENV || 'development';
 
 function isNodeModule(module) {
@@ -23,7 +23,7 @@ module.exports = {
         new webpack.DefinePlugin({
             PRODUCTION: ENV === 'production'
         }),
-        new CopyWebpackPlugin([
+        new copyWebpackPlugin([
             {from: 'index.html'},
             {from: '.htaccess'},
             {from: 'config.json'},
@@ -80,7 +80,7 @@ module.exports = {
         extensions: ['.jsx', '.js', '.json']
     },
     devServer: {
-        contentBase: path.join(__dirname, "dist"),
+        contentBase: path.join(__dirname, 'dist'),
         compress: true,
         historyApiFallback: true,
         open: true

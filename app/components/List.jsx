@@ -15,9 +15,9 @@ function List({pictures, fetching}) {
     var style = fetching ? {visibility: 'hidden'} : {};
     return (
         fetching ?
-        <ul class="thumbs"></ul>
+        <ul class="thumbs clearfix"></ul>
         :
-        <ul class="thumbs" style={ style }>{pictures}</ul>
+        <ul class="thumbs clearfix" style={ style }>{pictures}</ul>
     );
 }
 

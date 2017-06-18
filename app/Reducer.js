@@ -1,7 +1,34 @@
+import { fetch_pictures } from './Actions';
+
+
 export default (state, action) => {
-    console.log(action);
-    console.log(state);
+    function group(object) {
+        return Object.assign({}, state, {
+            group: Object.assign({}, state.group, object)
+        });
+    }
     switch(action.type) {
+        case 'CHANGE_GROUP':
+            return group(action.group);
+        case 'GROUP_TEXT':
+            return group({
+                text: action.text
+            });
+        case 'GROUPS':
+            return group({
+                suggestions: action.suggestions
+            });
+        case 'CHANGE_TYPE':
+            return Object.assign({}, state, {
+                type: action.value
+            });
+        case 'SET_DIMENSIONS':
+            return Object.assign({}, state, {
+                zoom: Object.assign({}, state.zoom, {
+                    width: action.width,
+                    height: action.height
+                })
+            });
         case 'CHANGE_GRID':
             var grid = state.grids[action.index];
             if (grid) {
@@ -9,6 +36,7 @@ export default (state, action) => {
                     grid: Object.assign(
                         {},
                         state.grid,
+                        {path: null},
                         grid,
                         {index: action.index}
                     )
@@ -17,8 +45,14 @@ export default (state, action) => {
                 return state;
             }
         case 'FETCH_PICTURES':
+            var value;
+            if (action.key == 'group') {
+                value = Object.assign({}, state.group, action.value);
+            } else {
+                value = action.value;
+            }
             return Object.assign({}, state, {
-                username: action.username,
+                [action.key]: value,
                 page: action.page,
                 fetching: true
             });
@@ -34,7 +68,6 @@ export default (state, action) => {
             });
         case 'ERROR':
             return Object.assign({}, state, {
-                username: null,
                 error: action.error
             });
         default:

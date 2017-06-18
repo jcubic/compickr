@@ -23,7 +23,7 @@ class Username extends preact.Component {
 const map_dispatch_to_props = (dispatch) => {
     return {
         change_user: (username) => {
-            dispatch(fetch_pictures(username, 1));
+            dispatch(fetch_pictures('username', username, 1));
         }
     };
 };

@@ -1,8 +1,10 @@
 import preact from 'preact';
 import { connect } from 'preact-redux';
 
-function Grid({width = 500, height = 500, path}) {
-    var scale = (width / 500) + ',' + (height / 500);
+function PathGrid({width, height, path, scale}) {
+    width = width || 500;
+    height = height || 500;
+    scale = scale ? (width / 500) + ',' + (height / 500) : 1;
     return (
         <svg width={width +"px"} height={height+ "px"}
              viewBox={"0 0 " + width + " " + height}>
@@ -11,7 +13,89 @@ function Grid({width = 500, height = 500, path}) {
     );
 }
 
+
+
+const map_state_to_props = (state) => {
+    return {
+        grid: state.grid,
+        width: state.zoom ? state.zoom.width : null,
+        height: state.zoom ? state.zoom.height : null
+    };
+};
+
+function path(name, width, height) {
+    var lines = [];
+    switch(name) {
+        case 'Golden Ratio':
+            var golden_ratio = 1.618034;
+            var w = width / golden_ratio;
+            var h = height / golden_ratio;
+            lines.push('M'+w+',0L'+w+','+height);
+            lines.push('M'+(width-w)+',0L'+(width-w)+','+height);
+            lines.push('M0,'+h+'L'+width+','+h);
+            lines.push('M0,'+(height-h)+'L'+width+','+(height-h));
+            break;
+        case 'Diagonals':
+            //lines.push('M0,0L'+width+','+height);
+            lines.push('M0,'+height+'L'+width+',0');
+            var a = {
+                x: 0,
+                y: -height
+            };
+            var b = {
+                x: width,
+                y: 0
+            };
+            var p = intersection(a, b, {x: width, y: -height});
+            console.log({height,width});
+            console.log(p);
+            lines.push('M' + p.x + ',' + p.y + 'L' + width + ',' + height);
+            //lines.push('M0,0L'+(width-w)+','+h);
+            //lines.push('M'+w+','+(height-h)+'L'+width+','+height);
+    }
+    return lines.join('');
+}
+
+function intersection(a, b, p) {
+    var x1 = a.x;
+    var y1 = a.y;
+    var x2 = p.x;
+    var y2 = p.y;
+    var x3 = b.x;
+    var y3 = b.y;
+    var m = (y3 - y1) / (x3 - x1);
+    var y = ((m * m * y2) + (x3 / m) + y1 - (m * x1)) / (1 + m*m);
+    var x = (m*y2)+(x2/(m*m)) - (m * y);
+    return {x,y};
+}
+
+function Grid({grid, width, height}) {
+    if (grid.path) {
+        return <PathGrid width={width} height={height}
+                         scale={true} {...grid}/>;
+    } else {
+        width = width || 500;
+        height = height || (500 / (4/3));
+        return <PathGrid width={width} height={height}
+                         scale={false}
+                         path={path(grid.name, width, height)}/>;
+    }
+}
+
+export default connect(map_state_to_props)(Grid);
+
+
 export const grids = [
+    {
+        name: 'Thirds',
+        path: 'm 499.37208,333.33288 -499.2156234,0 m 499.2156234,-166.6658 -499.2156234,0 M 334.04967,0 l 0,499.99999 M 167.10372,0 l 0,499.99999 M 0.57728577,0.99601 l 498.84507423,0 0,498.00798 -498.84507423,0 z'
+    },
+    {
+        name: 'Golden Ratio'
+    },
+    {
+        name: 'Diagonals'
+    },
     {
         name: 'Symatrical',
         path: 'm 499.41496,249.99999 -499.3948415,0 M 250.49925,1.1007397e-5 250.49925,500 M 0.49897745,0.99602101 l 498.96239255,0 0,498.00797899 -498.96239255,0 z'
@@ -19,10 +103,6 @@ export const grids = [
     {
         name: 'Horizontal',
         path: 'M 250.51809,1.1007397e-5 250.51809,500 M 0.99602399,0.99602101 l 498.00796601,0 0,498.00797899 -498.00796601,0 z'
-    },
-    {
-        name: 'Thirds',
-        path: 'm 499.37208,333.33288 -499.2156234,0 m 499.2156234,-166.6658 -499.2156234,0 M 334.04967,0 l 0,499.99999 M 167.10372,0 l 0,499.99999 M 0.57728577,0.99601 l 498.84507423,0 0,498.00798 -498.84507423,0 z'
     },
     {
         name: 'Spiral 1',
@@ -41,9 +121,3 @@ export const grids = [
         path: 'M 0.36080453,190.99438 A 308.37783,190.63357 0 0 1 308.73863,0.36080453 M 499.6392,499.6392 A 499.27839,308.64482 0 0 1 0.36080453,190.99438 M 308.73863,0.42889453 A 190.90057,118.01126 0 0 1 499.6392,118.44015 m -0.002,0 a 117.47727,72.622311 0 0 1 -117.47711,72.62231 m 0.002,0 a 73.423293,45.388944 0 0 1 -73.4233,-45.38895 m 0,0 a 44.053976,27.233367 0 0 1 44.05398,-27.23336 m 0,0 a 29.369317,18.155578 0 0 1 29.36932,18.15557 m 0,0 a 14.684659,9.077789 0 0 1 -14.68466,9.07779 M 0.36080453,499.6392 l 0,-308.64482 499.27839547,0 0,308.64482 z m 0,-308.64482 0,-190.63357547 308.37782547,0 0,190.63357547 z m 308.47877547,-72.5372 0,-118.09635547 190.69864,0 0,118.09635547 z m 72.94606,72.60528 0,-72.62231 117.85356,0 0,72.62231 z m -73.04701,0 0,-45.38895 73.4233,0 0,45.38895 z m 0,-45.38895 0,-27.23336 44.05398,0 0,27.23336 z m 44.16412,-9.07779 0,-18.15557 29.2555,0 0,18.15557 z m 14.57452,9.07779 0,-9.07779 14.68466,0 0,9.07779 z m -14.68466,0 0,-9.07779 14.68466,0 0,9.07779 z'
     }
 ];
-
-const map_state_to_props = (state) => {
-    return state.grid
-};
-
-export default connect(map_state_to_props)(Grid);

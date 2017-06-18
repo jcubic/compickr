@@ -1,6 +1,6 @@
 import 'whatwg-fetch';
 import config from './config';
-import { debounce } from '../utils';
+import { debounce } from './utils';
 
 function query(obj) {
     return Object.keys(obj).map(function(key) {
